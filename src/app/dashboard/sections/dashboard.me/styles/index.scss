@@ -1,0 +1,117 @@
+html,
+body,
+#root,
+#root > * {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-size: 14px;
+}
+
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+// Search form adjustments
+#searchForm {
+  > .ant-row {
+    > .ant-row.ant-form-item {
+      width: 100%;
+      text-align: right;
+      padding-right: 12px;
+
+      .ant-col {
+        flex: 1;
+        max-width: 100%;
+        width: 100%;
+
+        .ant-btn:first-child {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+// Loading spinner positioning
+.app-loading-wrapper {
+  &.ant-spin-spinning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Ensure we target Ant Design correctly
+.ant-list-item {
+    padding: 12px 12px !important;
+  }
+  
+  .ant-table-cell {
+    .ant-btn.ant-btn-link {
+      padding: 0 4px !important;
+    }
+  }
+  
+  // Use nesting for button spacing
+  .ant-btn {
+    & + .ant-btn {
+      margin-left: 10px;
+    }
+  }
+  
+// Define theme variables
+$light-1: #fff !important;
+$dark-1: #000 !important;
+$dark-2: #1f1f1f !important;
+
+// Light Theme
+[data-theme="light"] {
+  background-color: $light-1;
+
+  .bg-1,
+  .bg-2 {
+    background-color: $light-1;
+  }
+
+  .ant-layout-sider {
+    background-color: $light-1;
+  }
+
+  .text-1 {
+    color: #000;
+  }
+
+  .text-2 {
+    color: rgba(0, 0, 0, 0.85);
+  }
+}
+
+// Dark Theme
+[data-theme="dark"] {
+  .bg-1 {
+    background-color: $dark-1;
+  }
+
+  .bg-2 {
+    background-color: $dark-2;
+  }
+
+  .text-1 {
+    color: #fff;
+  }
+
+  .text-2 {
+    color: rgba(255, 255, 255, 0.65);
+  }
+}

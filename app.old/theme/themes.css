@@ -1,0 +1,58 @@
+/* src/styles/themes.css */
+
+/* Dark Theme */
+.dark-theme {
+  --background-color: #121212;
+  --primary-text-color: #ffffff;
+  --secondary-text-color: #bbbbbb;
+  --link-color: #00bcd4;
+  --button-background: #333333;
+  --button-text: #ffffff;
+}
+  
+/* Light Theme */
+.light-theme {
+  --background-color: #ffffff;
+  --primary-text-color: #000000;
+  --secondary-text-color: #555555;
+  --link-color: #0073e6;
+  --button-background: #f0f0f0;
+  --button-text: #000000;
+}
+  
+/* Apply theme variables to the body and all descendants */
+body,
+.dark-theme,
+.light-theme {
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
+}
+  
+a {
+  color: var(--link-color);
+}
+  
+button {
+  background-color: var(--button-background);
+  color: var(--button-text);
+}
+
+/* Specific styling for elements in dark-theme */
+.dark-theme .nav {
+  background-color: #1e1e1e;
+}
+  
+.dark-theme .footer {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+  
+/* Specific styling for elements in light-theme */
+.light-theme .nav {
+  background-color: #ffffff;
+}
+  
+.light-theme .footer {
+  background-color: #f8f8f8;
+  color: #000000;
+}
