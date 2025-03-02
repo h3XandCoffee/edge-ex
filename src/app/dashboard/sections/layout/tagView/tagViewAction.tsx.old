@@ -37,8 +37,7 @@ const TagsViewAction: FC = () => {
           },
           {
             key: '4',
-          //label: <Link to="/"><LocaleFormatter id="tagsView.operation.dashboard" /></Link>,
-            label: <Link to="/dashboard"><LocaleFormatter id="tagsView.operation.dashboard" /></Link>, // Fix: Ensure link keeps `/dashboard/`
+            label: <Link to="/"><LocaleFormatter id="tagsView.operation.dashboard" /></Link>,
           },
         ],
       }}

@@ -37,7 +37,8 @@ const routeList: RouteObject[] = [
     element: <WrapperRouteComponent element={<LoginPage />} titleId="title.login" />,
   },
   {
-    path: '/',
+//path: '/',
+  path: '/',
     element: <WrapperRouteComponent element={<LayoutPage />} titleId="" />,
     children: [
       {

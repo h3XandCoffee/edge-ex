@@ -3,7 +3,7 @@ import type { RouteProps } from 'react-router';
 
 import { useIntl } from 'react-intl';
 
-import PrivateRoute from './pravateRoute';
+import PrivateRoute from './privateRoute';
 
 export interface WrapperRouteProps extends RouteProps {
   /** document title locale id */
@@ -16,7 +16,7 @@ const WrapperRouteComponent: FC<WrapperRouteProps> = ({ titleId, auth, ...props 
   const { formatMessage } = useIntl();
 
   if (titleId) {
-    document.title = formatMessage({
+      document.title = formatMessage({
       id: titleId,
     });
   }

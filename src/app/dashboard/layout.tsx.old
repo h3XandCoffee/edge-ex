@@ -1,0 +1,223 @@
+"use client";
+
+import { Provider } from 'react-redux';
+
+import { BrowserRouter } from "react-router-dom";
+import RenderRouter from './routes';
+import { ConfigProvider, theme as antdTheme } from "antd";
+
+import { Suspense, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setGlobalState } from './stores/global.store';
+
+import dayjs from "dayjs";
+import enUS from "antd/es/locale/en_US";
+import zhCN from "antd/es/locale/zh_CN";
+
+import store from './stores';
+
+import { Inter } from "next/font/google";
+import "../../styles/index.css";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <DashboardProvider>{children}</DashboardProvider>
+      </BrowserRouter>
+    </Provider>
+  );
+}
+
+/*
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+//const { locale } = useSelector(state => state.user);
+//const { theme, loading } = useSelector(state => state.global);
+//const dispatch = useDispatch();
+
+  const [theme, setThemeState] = useState<"dark" | "light">("light");
+  const [locale, setLocale] = useState("en_US");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Delay Redux state retrieval to prevent errors
+    const reduxState = store.getState(); 
+    setThemeState(reduxState.global.theme);
+    setLocale(reduxState.user.locale);
+  }, []);
+
+  const setTheme = (dark = true) => {
+    dispatch(
+      setGlobalState({
+        theme: dark ? 'dark' : 'light',
+      }),
+    );
+  };
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setTheme(theme === "dark");
+
+      // Watch system theme change
+      if (!localStorage.getItem("theme")) {
+        const mql = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function matchMode(e: MediaQueryListEvent) {
+          setTheme(e.matches);
+        }
+
+        mql.addEventListener("change", matchMode);
+      }
+    }
+  }, [theme]);
+
+  // initial theme 
+  useEffect(() => {
+    setTheme(theme === 'dark');
+  
+    // watch system theme change
+    if (!localStorage.getItem('theme')) {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  
+      function matchMode(e: MediaQueryListEvent) {
+        setTheme(e.matches);
+      }
+  
+      mql.addEventListener('change', matchMode);
+    }
+  }, []);
+  
+  // set the locale for the user
+  // more languages options can be added here
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (locale === 'en_US') {
+        dayjs.locale('en');
+      } else if (locale === 'zh_CN') {
+        dayjs.locale('zh-cn');
+      }
+    }
+  }, [locale]);
+  
+  /**
+   * handler function that passes locale
+   * information to ConfigProvider for
+   * setting language across text components
+   *
+  const getAntdLocale = () => {
+    if (locale === 'en_US') {
+      return enUS;
+    } else if (locale === 'zh_CN') {
+      return zhCN;
+    }
+  };
+
+  return (
+    <Provider store={store}>
+      <BrowserRouter> 
+        <ConfigProvider
+            locale={getAntdLocale()}
+            componentSize="middle"
+            theme={{
+              token: { colorPrimary: "#13c2c2" },
+              algorithm: antdTheme.darkAlgorithm,
+            }}
+          >
+            <Suspense fallback={null}>
+              <RenderRouter /> 
+              {children}
+            </Suspense>
+        </ConfigProvider>
+      </BrowserRouter>
+    </Provider>
+  );
+}
+*/
+
+// Component to safely use Redux hooks inside the `<Provider>`
+function DashboardProvider({ children }: { children: React.ReactNode }) {
+  const dispatch = useDispatch();
+  const { locale } = useSelector((state: any) => state.user);
+  const { theme } = useSelector((state: any) => state.global);
+  const [themeState, setThemeState] = useState<"dark" | "light">("light");
+  const [localeState, setLocaleState] = useState("en_US");
+
+  useEffect(() => {
+    setThemeState(theme);
+    setLocaleState(locale);
+  }, [theme, locale]);
+
+  const setTheme = (dark = true) => {
+    dispatch(
+      setGlobalState({
+        theme: dark ? "dark" : "light",
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setTheme(themeState === "dark");
+
+      if (!localStorage.getItem("theme")) {
+        const mql = window.matchMedia("(prefers-color-scheme: dark)");
+        function matchMode(e: MediaQueryListEvent) {
+          setTheme(e.matches);
+        }
+        mql.addEventListener("change", matchMode);
+      }
+    }
+  }, [themeState]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      dayjs.locale(localeState === "en_US" ? "en" : "zh-cn");
+    }
+  }, [localeState]);
+
+  const getAntdLocale = () => (localeState === "en_US" ? enUS : zhCN);
+
+  return (
+    <ConfigProvider
+      locale={getAntdLocale()}
+      componentSize="middle"
+      theme={{
+        token: { colorPrimary: "#13c2c2" },
+        algorithm: themeState === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+      }}
+    >
+      <Suspense fallback={null}>
+        <div className={`dashboard-container flex ${inter.className}`}>
+          <RenderRouter />
+          {children}
+        </div>
+      </Suspense>
+    </ConfigProvider>
+  );
+}
+
+/*
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="bg-[#F8F9FA] dark:bg-gray-900">
+        <Providers>
+          <div className="dashboard-container flex">
+            <DashboardSidebar />
+            <main className="flex-1">
+              <DashboardNavbar />
+              {children}
+            </main>
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
+}
+*/

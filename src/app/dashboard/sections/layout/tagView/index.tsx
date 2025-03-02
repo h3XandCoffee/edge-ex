@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { Tabs } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation,  } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { addTag, removeTag, setActiveTag } from '../../../stores/tags-view.store';
 
@@ -14,21 +14,48 @@ const TagsView: FC = () => {
   const { menuList, locale } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate(); 
+
+  // Ensure paths keep `/dashboard/`
+  const fixPath = (path) => (path.startsWith("/dashboard") ? path : `/dashboard${path}`);
+  const removePath = (path) => (path.startsWith("/dashboard") ? path.replace("/dashboard", "") : path);
+
+  //console.log("tagVew/index location=" + location.pathname);
 
   // onClick tag
   const onChange = (key: string) => {
-    const tag = tags.find(tag => tag.path === key);
-
+    //console.log("tagVew/index onChange()[key]=" + key);
+    const tag = tags.find(tag => fixPath(tag.path) === fixPath(key));
+    //console.log("tagVew/index[tag.path]=" + tag.path);
     if (tag) {
       setCurrentTag(tag.path);
     }
   };
 
   // onRemove tag
+  /*
   const onClose = (targetKey: string) => {
     dispatch(removeTag(targetKey));
   };
+  */
 
+  const onClose = (targetKey: string) => {
+    dispatch(removeTag(targetKey));
+  
+    const remainingTabs = tags.filter((tag) => tag.path !== targetKey);
+    if (remainingTabs.length > 0) {
+      const lastTab = remainingTabs[remainingTabs.length - 1];
+
+      //console.log("tagVew/index onClose()[lastTab.path]=" + lastTab.path);
+      
+      navigate(lastTab.path);
+    } else {
+      // If no tabs left it can go to / because it will be /dashboard
+      navigate('/'); // If no tabs left, go to `/dashboard`
+    }
+  };
+
+  /*
   const setCurrentTag = useCallback(
     (id?: string) => {
       const tag = tags.find(item => {
@@ -45,6 +72,44 @@ const TagsView: FC = () => {
     },
     [dispatch, location.pathname, tags],
   );
+  */
+ 
+  const setCurrentTag = useCallback(
+    (id?: string) => {
+      //console.log("setCurrentTag called with id =", id);
+      //console.log("Current location.pathname =", location.pathname);
+      
+      // Loop through tags and log each path
+      for (const item of tags) {
+        //console.log("Checking tag:", item.path);
+      }
+  
+      let tag;
+      if (id) {
+        // Case 1: Looking for a tag by id
+        tag = tags.find((item) => {
+          //console.log(`Comparing ${item.path} === ${id}`);
+          return item.path === id;
+        });
+      } else {
+        // Case 2: Looking for a tag by location.pathname
+        tag = tags.find((item) => {
+          //console.log(`Comparing ${item.path} === ${location.pathname}`);
+          return item.path === location.pathname;
+        });
+      }
+  
+      if (tag) {
+        //console.log("Found tag:", tag.path);
+        dispatch(setActiveTag(tag.path)); // Update Redux state
+        navigate(tag.path);               // Go to the selected tag
+      } else {
+        //console.log("No matching tag found.");
+      }
+    },
+    [dispatch, location.pathname, tags]
+  );
+  
 
   useEffect(() => {
     if (menuList.length) {
@@ -59,7 +124,7 @@ const TagsView: FC = () => {
         );
       }
     }
-  }, [dispatch, location.pathname, menuList]);
+  }, [dispatch, fixPath(location.pathname), menuList]);
 
   return (
     <div id="pageTabs" style={{ padding: '6px 4px' }}>

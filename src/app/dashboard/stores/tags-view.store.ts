@@ -5,7 +5,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: TagState = {
-  activeTagId: typeof window !== "undefined" ? window.location.pathname : "/",
+//activeTagId: typeof window !== "undefined" ? window.location.pathname : "/",
+  activeTagId: typeof window !== "undefined" ? window.location.pathname : "/dashboard",
   tags: [],
 };
 

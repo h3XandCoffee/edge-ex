@@ -1,0 +1,38 @@
+
+"use client";
+
+import type { FC } from 'react';
+import './styles/index.scss';
+import './mock';
+import App from './App';
+
+import { useEffect, useState } from 'react';
+import { injectIntl, WrappedComponentProps } from "react-intl";
+import RenderRouter from './routes';
+
+/*
+const DashBoardPage: FC<WrappedComponentProps> = ({ intl }) => {
+  const [loading, setLoading] = useState(true);
+
+  // mock timer to mimic dashboard data loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(undefined as any);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+  
+  return (
+    <div>
+      <App />  
+    </div>
+  );
+};
+
+export default injectIntl(DashBoardPage);
+*/
+
+export default RenderRouter;
